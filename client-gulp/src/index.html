@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+  <title>gif sheet</title>
+
+  <link rel="stylesheet" href="css/app.css" charset="utf-8">
+</head>
+<body>
+  <div class="content" ng-controller="MainController">
+
+    <section class="words">
+      <h1>the words</h1>
+      <div class="section-content">
+        <p class="intro">
+          how-to use: find a random gif on the dark side of the interwebs (<a href="https://www.tumblr.com/search/gif+geometry" target="_blank">hint</a>)<br/>
+          then, copy/paste its url in the textfield below and press enter<br/>
+          next, watch how your brower extracts each individual<br/>frame of your awesomely-hand-picked-gif
+        </p>
+        <input class="gif-url-input" type="text" placeholder="paste url, then [enter]" />
+        <p class="random">or, totally enter lazy mode and start tapping ▾ this ▾</p>
+        <button ng-click="luckyButtonHandler()">💎 random i’m feeling very lucky button</button>
+      </div>
+    </section>
+
+    <section class="target" ng-if="gif">
+      <h1>the gif</h1>
+      <div class="section-content">
+        <div ng-if="showInfo">
+          <div>
+            <div class="color-block" style="background-color:rgba({{ Math.floor(swatches.Vibrant.rgb[0]) }}, {{ Math.floor(swatches.Vibrant.rgb[1]) }}, {{ Math.floor(swatches.Vibrant.rgb[2]) }}, 1.0);"></div>
+            <div class="color-block" style="background-color:rgba({{ Math.floor(swatches.Muted.rgb[0]) }}, {{ Math.floor(swatches.Muted.rgb[1]) }}, {{ Math.floor(swatches.Muted.rgb[2]) }}, 1.0);"></div>
+            <div class="color-block" style="background-color:rgba({{ Math.floor(swatches.DarkVibrant.rgb[0]) }}, {{ Math.floor(swatches.DarkVibrant.rgb[1]) }}, {{ Math.floor(swatches.DarkVibrant.rgb[2]) }}, 1.0);"></div>
+            <div class="color-block" style="background-color:rgba({{ Math.floor(swatches.DarkMuted.rgb[0]) }}, {{ Math.floor(swatches.DarkMuted.rgb[1]) }}, {{ Math.floor(swatches.DarkMuted.rgb[2]) }}, 1.0);"></div>
+            <div class="color-block" style="background-color:rgba({{ Math.floor(swatches.LightVibrant.rgb[0]) }}, {{ Math.floor(swatches.LightVibrant.rgb[1]) }}, {{ Math.floor(swatches.LightVibrant.rgb[2]) }}, 1.0);"></div>
+            <div class="color-block" style="background-color:rgba({{ Math.floor(swatches.LightMuted.rgb[0]) }}, {{ Math.floor(swatches.LightMuted.rgb[1]) }}, {{ Math.floor(swatches.LightMuted.rgb[2]) }}, 1.0);"></div>
+          </div>
+          <table>
+            <tr>
+              <td class="label-col">url:</td>
+              <td>{{url}}</td>
+            </tr>
+            <tr>
+              <td class="label-col">final url:</td>
+              <td>{{finalUrl}}</td>
+            </tr>
+            <tr>
+              <td class="label-col">frame count:</td>
+              <td>{{gif.frames.length}}</td>
+            </tr>
+          </table>
+        </div>
+        <img ng-src="{{url}}">
+      </div>
+    </section>
+
+    <section class="result" ng-if="gif">
+      <button ng-click="statsButtonHandler()" class="button-stats" style="background-color:rgba({{ Math.floor(swatches.Vibrant.rgb[0]) }}, {{ Math.floor(swatches.Vibrant.rgb[1]) }}, {{ Math.floor(swatches.Vibrant.rgb[2]) }}, 1.0);">stats for nerds</button>
+      <h1>the sheet</h1>
+      <div class="section-content">
+        <div ng-if="renderMode === 'seperate-images' && gif">
+          <div ng-if="showInfo">
+            <table>
+              <tr>
+                <td class="label-col">disposal method:</td>
+                <td>indicates the way in which the graphic is to be treated <u>after</u> being displayed.</td>
+              </tr>
+              <tr>
+                <td class="label-col">delay time:</td>
+                <td>if not 0, this field specifies the number of <u>hundredths (1/100) of a second</u> to wait before continuing with the processing of the data stream.</td>
+              </tr>
+            </table>
+          </div>
+          <div class="frames">
+            <div class="frame" ng-repeat="frame in gif.frames">
+              <div class="frame-info" ng-if="showInfo">
+                <table>
+                  <tr>
+                    <td class="label-col">frame:</td>
+                    <td>{{$index}}</td>
+                  </tr>
+                  <tr>
+                    <td class="label-col">disposal method:</td>
+                    <td>{{frame.disposal + ' (' + getDisposalDescription(frame.disposal) + ')'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="label-col">delay:</td>
+                    <td>{{frame.delay}}</td>
+                  </tr>
+                  <tr>
+                    <td class="label-col">accumulated delay:</td>
+                    <td>{{gif.offsets[$index]}}</td>
+                  </tr>
+                  <tr>
+                    <td class="label-col">blob:</td>
+                    <td class="break-col">{{frame.url}}</td>
+                  </tr>
+                </table>
+              </div>
+              <img ng-src="{{frame.url}}">
+            </div>
+          </div>
+        </div>
+        <div class="rendered-sheet" ng-if="renderMode === 'rendered-sheet' && gif">
+          <div gif-sheet="gif" />
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="lib/system.js"></script>
+  <script src="config.js"></script>
+  <script>System.import('./js/app')</script>
+</body>
+</html>
